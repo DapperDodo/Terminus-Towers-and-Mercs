@@ -92,31 +92,6 @@ func Spawn(pool *ecs.Pool) {
 	///////////////////////////////////////////////
 	// Patches
 	///////////////////////////////////////////////
-	// for p := 0; p < 6; p++ {
-
-	// 	Patch, err := pool.AddEntity()
-	// 	if err != nil {
-	// 		panic(err)
-	// 	}
-	// 	Patch.AddAspect(ecs.C_POSITION, ecs.C_TERMINAL, ecs.C_RESOURCE)
-	// 	Patch.X = rand.Float64()
-	// 	Patch.Y = rand.Float64()/2
-	// 	Patch.Rune = '⚛'
-	// 	Patch.Color = api.Color_BLUE
-	// 	Patch.Resources = float64(100 * (p + 1))
-
-	// 	Mirror, err := pool.AddEntity()
-	// 	if err != nil {
-	// 		panic(err)
-	// 	}
-	// 	Mirror.AddAspect(ecs.C_POSITION, ecs.C_TERMINAL, ecs.C_RESOURCE)
-	// 	Mirror.X = 1 - Patch.X
-	// 	Mirror.Y = 1 - Patch.Y
-	// 	Mirror.Rune = '⚛'
-	// 	Mirror.Color = api.Color_BLUE
-	// 	Mirror.Resources = Patch.Resources
-	// }
-
 	patches := map[string]*struct {
 		cx, cy, r float64
 		e         *ecs.Entity
@@ -207,49 +182,6 @@ func Spawn(pool *ecs.Pool) {
 	waypoints["topmidclose"].e.Outward = []*ecs.Entity{TerminusB}
 	TerminusB.AddAspect(ecs.C_WAYPOINT)
 
-	//TODO: user interface for creating path from terminus A
-
-	// ///////////////////////////////////////////////
-	// // Outpost 1
-	// ///////////////////////////////////////////////
-	// Outpost1, err = pool.AddEntity()
-	// if err != nil {
-	// 	panic(err)
-	// }
-	// Outpost1.AddAspect(ecs.C_POSITION, ecs.C_TERMINAL, ecs.C_TEAM_A, ecs.C_TARGETABLE)
-	// Outpost1.X = w * 0.50
-	// Outpost1.Y = h * 0.75
-	// Outpost1.Rune = '♜'
-	// Outpost1.Color = api.Color_GREEN
-
-	// ///////////////////////////////////////////////
-	// // Outpost2
-	// ///////////////////////////////////////////////
-	// Outpost2, err = pool.AddEntity()
-	// if err != nil {
-	// 	panic(err)
-	// }
-	// Outpost2.AddAspect(ecs.C_POSITION, ecs.C_TERMINAL, ecs.C_TEAM_A, ecs.C_TARGETABLE)
-	// Outpost2.X = w * 0.25
-	// Outpost2.Y = h * 0.25
-	// Outpost2.Rune = '♜'
-	// Outpost2.Color = api.Color_GREEN
-
-	// ///////////////////////////////////////////////
-	// // Hero
-	// ///////////////////////////////////////////////
-	// Hero, err = pool.AddEntity()
-	// if err != nil {
-	// 	panic(err)
-	// }
-	// Hero.AddAspect(ecs.C_POSITION, ecs.C_TERMINAL, ecs.C_CONTROLLABLE, ecs.C_SHOOTER, ecs.C_TEAM_A, ecs.C_TARGETABLE)
-	// Hero.X = w / 2.0
-	// Hero.Y = h / 2.0
-	// Hero.Rune = '☃'
-	// Hero.Color = api.Color_GREEN
-	// Hero.Cool = 0.66
-	// Hero.FireRange = 15
-
 	///////////////////////////////////////////////
 	// Enemy
 	///////////////////////////////////////////////
@@ -263,8 +195,6 @@ func Spawn(pool *ecs.Pool) {
 	Creep.Y = 0 + 0.06
 	Creep.Rune = '☠'
 	Creep.Color = api.Color_RED
-	Creep.DX = 0
-	Creep.DY = 0.1
 	Creep.Speed = 0.00125
 	Creep.List = []*ecs.Objective{
 		&ecs.Objective{Entity: TerminusA, Range: 0.14},
@@ -272,4 +202,59 @@ func Spawn(pool *ecs.Pool) {
 	Creep.Cool = 1
 	Creep.FireRange = 0.15
 
+	///////////////////////////////////////////////
+	// Test Units
+	///////////////////////////////////////////////
+
+	// W0, err := pool.AddEntity()
+	// if err != nil {
+	// 	panic(err)
+	// }
+	// W0.AddAspect(ecs.C_POSITION, ecs.C_TERMINAL)
+	// W0.X = 0
+	// W0.Y = 0
+	// W0.Rune = 'T'
+	// W0.Color = api.Color_MAGENTA
+
+	// W1, err := pool.AddEntity()
+	// if err != nil {
+	// 	panic(err)
+	// }
+	// W1.AddAspect(ecs.C_POSITION, ecs.C_TERMINAL, ecs.C_ROTATION, ecs.C_VELOCITY, ecs.C_OBJECTIVES)
+	// W1.X = 0
+	// W1.Y = 0
+	// W1.Rune = 'T'
+	// W1.Color = api.Color_MAGENTA
+	// W1.Speed = 0.002
+	// W1.List = []*ecs.Objective{
+	// 	&ecs.Objective{X: 1, Y: 0, Range: 0},
+	// }
+
+	// W2, err := pool.AddEntity()
+	// if err != nil {
+	// 	panic(err)
+	// }
+	// W2.AddAspect(ecs.C_POSITION, ecs.C_TERMINAL, ecs.C_ROTATION, ecs.C_VELOCITY, ecs.C_OBJECTIVES)
+	// W2.X = 0
+	// W2.Y = 0
+	// W2.Rune = 'T'
+	// W2.Color = api.Color_MAGENTA
+	// W2.Speed = 0.002
+	// W2.List = []*ecs.Objective{
+	// 	&ecs.Objective{X: 0, Y: 1, Range: 0},
+	// }
+
+	// W3, err := pool.AddEntity()
+	// if err != nil {
+	// 	panic(err)
+	// }
+	// W3.AddAspect(ecs.C_POSITION, ecs.C_TERMINAL, ecs.C_ROTATION, ecs.C_VELOCITY, ecs.C_OBJECTIVES)
+	// W3.X = 0
+	// W3.Y = 0
+	// W3.Rune = 'T'
+	// W3.Color = api.Color_MAGENTA
+	// W3.Speed = 0.002
+	// W3.List = []*ecs.Objective{
+	// 	&ecs.Objective{X: 1, Y: 1, Range: 0},
+	// }
 }

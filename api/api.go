@@ -5,10 +5,6 @@ type Key int
 const (
 	Key_UNKNOWN Key = iota
 	Key_ESC
-	Key_UP
-	Key_DOWN
-	Key_LEFT
-	Key_RIGHT
 	Key_SPACE
 	Key_BACKSPACE
 	Key_A
@@ -20,6 +16,12 @@ const (
 	Key_W
 	Key_TAB
 	Key_ENTER
+	Key_PANUP
+	Key_PANDOWN
+	Key_PANLEFT
+	Key_PANRIGHT
+	Key_ZOOMIN
+	Key_ZOOMOUT
 )
 
 type Color int

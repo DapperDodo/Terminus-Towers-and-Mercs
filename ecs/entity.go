@@ -11,7 +11,6 @@ type Entity struct {
 	*Terminal
 	*TeamA
 	*TeamB
-	*Controllable
 	*Base
 	*Objectives
 	*Shooter
@@ -71,8 +70,6 @@ func (e *Entity) Add(t ComponentType) {
 		e.TeamA.Active = true
 	case C_TEAM_B:
 		e.TeamB.Active = true
-	case C_CONTROLLABLE:
-		e.Controllable.Active = true
 	case C_BASE:
 		e.Base.Active = true
 	case C_OBJECTIVES:
@@ -138,8 +135,6 @@ func (e *Entity) Del(t ComponentType) {
 		e.TeamA.Active = false
 	case C_TEAM_B:
 		e.TeamB.Active = false
-	case C_CONTROLLABLE:
-		e.Controllable.Active = false
 	case C_BASE:
 		e.Base.Active = false
 	case C_OBJECTIVES:
@@ -223,8 +218,6 @@ func (e *Entity) Has(t ComponentType) bool {
 		return e.TeamA.Active
 	case C_TEAM_B:
 		return e.TeamB.Active
-	case C_CONTROLLABLE:
-		return e.Controllable.Active
 	case C_BASE:
 		return e.Base.Active
 	case C_OBJECTIVES:

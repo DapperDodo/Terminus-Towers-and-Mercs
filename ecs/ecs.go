@@ -42,7 +42,6 @@ func (p *Pool) AddEntity() (*Entity, error) {
 		&Terminal{&Component{}, '?', api.Color_UNKNOWN, api.Color_UNKNOWN},
 		&TeamA{&Component{}},
 		&TeamB{&Component{}},
-		&Controllable{&Component{}},
 		&Base{&Component{}},
 		&Objectives{&Component{}, nil, nil},
 		&Shooter{&Component{}, 0, 0},

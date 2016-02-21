@@ -36,6 +36,8 @@ gameloop:
 			switch key {
 			case api.Key_ESC:
 				break gameloop
+			// case api.Key_PANUP, api.Key_PANDOWN, api.Key_PANLEFT, api.Key_PANRIGHT, api.Key_ZOOMIN, api.Key_ZOOMOUT:
+			// 	renderer.CamAction(key)
 			default:
 				ecs.Control(pool, key)
 			}

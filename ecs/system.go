@@ -123,29 +123,6 @@ func Control(p *Pool, key api.Key) {
 		}
 		return
 	}
-
-	controllables := p.ListAspect(C_POSITION, C_CONTROLLABLE)
-	for _, e := range controllables {
-
-		e.Add(C_ROTATION)
-		switch key {
-		case api.Key_UP:
-			e.DX = 0
-			e.DY = -1
-		case api.Key_DOWN:
-			e.DX = 0
-			e.DY = 1
-		case api.Key_LEFT:
-			e.DX = -1
-			e.DY = 0
-		case api.Key_RIGHT:
-			e.DX = 1
-			e.DY = 0
-		}
-
-		e.Add(C_VELOCITY)
-		e.Speed = 0.05
-	}
 }
 
 func Update(p *Pool, deltaTime float64) {
@@ -351,7 +328,7 @@ func hit(e *Entity) {
 
 		e.Rune = '⚡'
 		e.Color = api.Color_WHITE
-		e.DelAspect(C_ROTATION, C_VELOCITY, C_TEAM_A, C_TEAM_B, C_CONTROLLABLE, C_BASE, C_OBJECTIVES, C_SHOOTER, C_COOLDOWN, C_BULLET)
+		e.DelAspect(C_ROTATION, C_VELOCITY, C_TEAM_A, C_TEAM_B, C_BASE, C_OBJECTIVES, C_SHOOTER, C_COOLDOWN, C_BULLET)
 		e.Add(C_DYING)
 		e.TimeToLive = 0.075
 		e.sickbed = 0

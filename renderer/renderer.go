@@ -10,7 +10,12 @@ import (
 )
 
 func Init() error {
-	return termbox.Init()
+	err := termbox.Init()
+	if err != nil {
+		return err
+	}
+	_ = termbox.SetInputMode(termbox.InputEsc | termbox.InputMouse)
+	return nil
 }
 
 func Size() (int, int) {
@@ -24,18 +29,19 @@ func Close() {
 func PollEvent() api.Key {
 
 	event := termbox.PollEvent()
-	if event.Type == termbox.EventKey {
+	switch event.Type {
+	case termbox.EventKey:
 		switch event.Key {
 		case termbox.KeyEsc:
 			return api.Key_ESC
 		case termbox.KeyArrowUp:
-			return api.Key_UP
+			return api.Key_PANUP
 		case termbox.KeyArrowDown:
-			return api.Key_DOWN
+			return api.Key_PANDOWN
 		case termbox.KeyArrowLeft:
-			return api.Key_LEFT
+			return api.Key_PANLEFT
 		case termbox.KeyArrowRight:
-			return api.Key_RIGHT
+			return api.Key_PANRIGHT
 		case termbox.KeySpace:
 			return api.Key_SPACE
 		case termbox.KeyBackspace, termbox.KeyBackspace2:
@@ -61,37 +67,15 @@ func PollEvent() api.Key {
 		case 'w', 'W':
 			return api.Key_W
 		}
+	case termbox.EventMouse:
+		switch event.Key {
+		case termbox.MouseWheelUp:
+			return api.Key_ZOOMIN
+		case termbox.MouseWheelDown:
+			return api.Key_ZOOMOUT
+		}
 	}
 	return api.Key_UNKNOWN
-}
-
-/* convert game coords to viewport coords */
-func CalcXY(gx, gy float64) (vx, vy int) {
-
-	// window
-	w, h := Size()
-
-	// viewport
-	vw := w - 1
-	vh := h - 6 - 1
-
-	// cam
-	cx, cy := 0.0, 0.0 // offset
-	cz := 1.0          // zoom
-
-	// character ratio
-	yratio := 2.0
-
-	// viewport offset
-	vo := ((float64(vw) - (float64(vh) * yratio)) / 2.0)
-
-	fx := float64(vh) * cz * yratio
-	fy := float64(vh) * cz
-
-	x := int((gx * fx) + cx + vo + 0.5)
-	y := int((gy * fy) + cy + 2 + 0.5)
-
-	return x, y
 }
 
 func Render(pool *ecs.Pool) {
@@ -103,17 +87,17 @@ func Render(pool *ecs.Pool) {
 
 	// huds
 	for x := 0; x < w; x++ {
-		// top hud
 		termbox.SetCell(x, 1, '═', termbox.ColorWhite, termbox.ColorBlack)
-		// bottom hud
 		termbox.SetCell(x, h-4, '═', termbox.ColorWhite, termbox.ColorBlack)
 	}
 
 	// game entity layer
 	for _, e := range pool.Entities {
-		x, y := CalcXY(e.X, e.Y)
 		if e.HasAspect(ecs.C_POSITION, ecs.C_TERMINAL) {
-			termbox.SetCell(x, y, e.Rune, colorToTerm(e.Color), colorToTerm(e.BgColor))
+			x, y, cull := CalcXY(e.X, e.Y)
+			if !cull {
+				termbox.SetCell(x, y, e.Rune, colorToTerm(e.Color), colorToTerm(e.BgColor))
+			}
 		}
 	}
 	// overlays
@@ -165,30 +149,34 @@ func Render(pool *ecs.Pool) {
 func renderPath(e *ecs.Entity, color termbox.Attribute) {
 	if len(e.Waypoints) > 0 {
 		for _, waypoint := range e.Waypoints {
-			x, y := CalcXY(waypoint.X, waypoint.Y)
-			termbox.SetCell(x, y, '߉', color, termbox.ColorBlack)
+			x, y, cull := CalcXY(waypoint.X, waypoint.Y)
+			if !cull {
+				termbox.SetCell(x, y, '߉', color, termbox.ColorBlack)
+			}
 		}
 	}
 }
 
 func renderEntityHud(e *ecs.Entity, color termbox.Attribute, bold bool) {
-	x, y := CalcXY(e.X, e.Y)
-	if bold {
-		termbox.SetCell(x-1, y-1, '┏', color, termbox.ColorBlack)
-		termbox.SetCell(x+1, y-1, '┓', color, termbox.ColorBlack)
-		termbox.SetCell(x-1, y+1, '┗', color, termbox.ColorBlack)
-		termbox.SetCell(x+1, y+1, '┛', color, termbox.ColorBlack)
-	} else {
-		termbox.SetCell(x-1, y-1, '┌', color, termbox.ColorBlack)
-		termbox.SetCell(x+1, y-1, '┐', color, termbox.ColorBlack)
-		termbox.SetCell(x-1, y+1, '└', color, termbox.ColorBlack)
-		termbox.SetCell(x+1, y+1, '┘', color, termbox.ColorBlack)
-	}
-	if e.HasAspect(ecs.C_RESOURCE) {
-		renderText(x+1+1, y-1+3, "r:"+strconv.FormatFloat(e.Resources, 'f', 0, 64), color)
-	}
-	if e.HasAspect(ecs.C_PAYROLL) {
-		renderText(x+1+1, y-1+4, "c:"+strconv.FormatFloat(e.Burden, 'f', 0, 64), color)
+	x, y, cull := CalcXY(e.X, e.Y)
+	if !cull {
+		if bold {
+			termbox.SetCell(x-1, y-1, '┏', color, termbox.ColorBlack)
+			termbox.SetCell(x+1, y-1, '┓', color, termbox.ColorBlack)
+			termbox.SetCell(x-1, y+1, '┗', color, termbox.ColorBlack)
+			termbox.SetCell(x+1, y+1, '┛', color, termbox.ColorBlack)
+		} else {
+			termbox.SetCell(x-1, y-1, '┌', color, termbox.ColorBlack)
+			termbox.SetCell(x+1, y-1, '┐', color, termbox.ColorBlack)
+			termbox.SetCell(x-1, y+1, '└', color, termbox.ColorBlack)
+			termbox.SetCell(x+1, y+1, '┘', color, termbox.ColorBlack)
+		}
+		if e.HasAspect(ecs.C_RESOURCE) {
+			renderText(x+1+1, y-1+3, "r:"+strconv.FormatFloat(e.Resources, 'f', 0, 64), color)
+		}
+		if e.HasAspect(ecs.C_PAYROLL) {
+			renderText(x+1+1, y-1+4, "c:"+strconv.FormatFloat(e.Burden, 'f', 0, 64), color)
+		}
 	}
 }
 
@@ -219,4 +207,59 @@ func colorToTerm(c api.Color) termbox.Attribute {
 	default:
 		return termbox.ColorBlack
 	}
+}
+
+var (
+	cx, cy float64 = 0.0, 0.0 // cam offset
+	cz     float64 = 1.0      // cam zoom
+)
+
+func CamAction(key api.Key) {
+
+	camspeed := 0.2
+
+	switch key {
+	case api.Key_PANUP:
+		cy += camspeed
+	case api.Key_PANDOWN:
+		cy -= camspeed
+	case api.Key_PANLEFT:
+		cx += camspeed
+	case api.Key_PANRIGHT:
+		cx -= camspeed
+	case api.Key_ZOOMIN:
+		cz += 0.1
+	case api.Key_ZOOMOUT:
+		cz -= 0.1
+	}
+}
+
+// convert game coords to viewport coords
+// TODO: parts of this only need to be calculated when terminal size changes
+func CalcXY(gx, gy float64) (vx, vy int, cullable bool) {
+
+	// window
+	w, h := Size()
+
+	// viewport
+	vw := w - 1
+	vh := h - 6 - 1
+
+	// character ratio
+	yratio := 2.0
+
+	// viewport offset
+	vo := ((float64(vw) - (float64(vh) * yratio)) / 2.0)
+
+	fx := float64(vh) * cz * yratio
+	fy := float64(vh) * cz
+
+	x := int((gx * fx) + cx + vo + 0.5)
+	y := int((gy * fy) + cy + 2 + 0.5)
+
+	if x < 0 || x > vw || y < 2 || y > (vh+2) {
+		cullable = true
+	}
+
+	return x, y, cullable
 }

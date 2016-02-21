@@ -18,7 +18,6 @@ const (
 	C_TERMINAL
 	C_TEAM_A
 	C_TEAM_B
-	C_CONTROLLABLE
 	C_BASE
 	C_OBJECTIVES
 	C_SHOOTER
@@ -67,10 +66,6 @@ type TeamA struct {
 }
 
 type TeamB struct {
-	*Component
-}
-
-type Controllable struct {
 	*Component
 }
 
