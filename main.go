@@ -9,8 +9,6 @@ import (
 	"towmer/renderer"
 )
 
-var w, h, x, y int
-
 func main() {
 
 	err := renderer.Init()
@@ -27,15 +25,9 @@ func main() {
 		}
 	}()
 
-	w, h = renderer.Size()
-
-	HudY := 4
-
-	ecs.Bounds(float64(w), float64(h-HudY))
-
 	pool := ecs.NewPool(100)
 
-	game.Spawn(pool, float64(w), float64(h-HudY))
+	game.Spawn(pool)
 
 gameloop:
 	for {
@@ -49,7 +41,7 @@ gameloop:
 			}
 		default:
 			ecs.Update(pool, 0.01)
-			renderer.Render(pool, float64(w), float64(h-HudY))
+			renderer.Render(pool)
 			time.Sleep(10 * time.Millisecond)
 		}
 	}

@@ -148,13 +148,6 @@ func Control(p *Pool, key api.Key) {
 	}
 }
 
-var w, h float64
-
-func Bounds(pw, ph float64) {
-	w = pw
-	h = ph
-}
-
 func Update(p *Pool, deltaTime float64) {
 
 	for _, e := range p.Entities {
@@ -261,16 +254,16 @@ func checkBounds(e *Entity) {
 		e.Y = 0
 		e.Del(C_VELOCITY)
 	}
-	if e.Y >= h {
-		e.Y = h - 1
+	if e.Y >= 1 {
+		e.Y = 1
 		e.Del(C_VELOCITY)
 	}
 	if e.X < 0 {
 		e.X = 0
 		e.Del(C_VELOCITY)
 	}
-	if e.X >= w {
-		e.X = w - 1
+	if e.X >= 1 {
+		e.X = 1
 		e.Del(C_VELOCITY)
 	}
 }
@@ -327,8 +320,8 @@ func fire(e *Entity, p *Pool) {
 		bullet.X = e.X
 		bullet.Y = e.Y
 		bullet.Rune = '.'
-		bullet.Speed = 0.1
-		bullet.List = []*Objective{&Objective{Entity: closest_target, Range: 0.05}}
+		bullet.Speed = 0.01
+		bullet.List = []*Objective{&Objective{Entity: closest_target, Range: 0.01}}
 		if e.Has(C_TEAM_A) {
 			bullet.Add(C_TEAM_A)
 			bullet.Color = api.Color_GREEN
@@ -389,7 +382,7 @@ func buildBase(e *Entity, p *Pool) {
 			continue
 		}
 		d := math.Sqrt(math.Pow(e.X-patch.X, 2) + math.Pow(e.Y-patch.Y, 2))
-		if d < 25 {
+		if d < 0.25 {
 			if d < closest_range {
 				closest_range = d
 				closest_patch = patch
@@ -487,7 +480,7 @@ func emit(e *Entity, p *Pool, dt float64) {
 	packet.X = e.X
 	packet.Y = e.Y
 	packet.Rune = '+'
-	packet.Speed = 1.25
+	packet.Speed = 0.0125
 	packet.List = []*Objective{&Objective{Entity: e.Downstream[0], Range: packet.Speed / 2}}
 	packet.TargetEntity = e.Downstream[0]
 	if e.Has(C_TEAM_A) {

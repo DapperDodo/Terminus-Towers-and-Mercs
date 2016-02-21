@@ -10,11 +10,54 @@ import (
 
 var Hero, Creep, TerminusA, TerminusB, Outpost1, Outpost2, Patch1, Patch2, Patch3 *ecs.Entity
 
-func Spawn(pool *ecs.Pool, w, h float64) {
+func Spawn(pool *ecs.Pool) {
 
 	rand.Seed(time.Now().UnixNano())
 
 	var err error
+
+	///////////////////////////////////////////////
+	// World Corners
+	///////////////////////////////////////////////
+	LT, err := pool.AddEntity()
+	if err != nil {
+		panic(err)
+	}
+	LT.AddAspect(ecs.C_POSITION, ecs.C_TERMINAL)
+	LT.X = 0
+	LT.Y = 0
+	LT.Rune = '⌜'
+	LT.Color = api.Color_WHITE
+
+	RT, err := pool.AddEntity()
+	if err != nil {
+		panic(err)
+	}
+	RT.AddAspect(ecs.C_POSITION, ecs.C_TERMINAL)
+	RT.X = 1
+	RT.Y = 0
+	RT.Rune = '⌝'
+	RT.Color = api.Color_WHITE
+
+	LB, err := pool.AddEntity()
+	if err != nil {
+		panic(err)
+	}
+	LB.AddAspect(ecs.C_POSITION, ecs.C_TERMINAL)
+	LB.X = 0
+	LB.Y = 1
+	LB.Rune = '⌞'
+	LB.Color = api.Color_WHITE
+
+	RB, err := pool.AddEntity()
+	if err != nil {
+		panic(err)
+	}
+	RB.AddAspect(ecs.C_POSITION, ecs.C_TERMINAL)
+	RB.X = 1
+	RB.Y = 1
+	RB.Rune = '⌟'
+	RB.Color = api.Color_WHITE
 
 	///////////////////////////////////////////////
 	// Main Base Team A
@@ -24,8 +67,8 @@ func Spawn(pool *ecs.Pool, w, h float64) {
 		panic(err)
 	}
 	TerminusA.AddAspect(ecs.C_POSITION, ecs.C_TERMINAL, ecs.C_BASE, ecs.C_TEAM_A, ecs.C_TARGETABLE, ecs.C_SELECTED, ecs.C_RESOURCE, ecs.C_ENERGYSTORE)
-	TerminusA.X = w / 2
-	TerminusA.Y = h - 3
+	TerminusA.X = 0.5
+	TerminusA.Y = 1 - 0.1
 	TerminusA.Rune = '♛'
 	TerminusA.Color = api.Color_GREEN
 	TerminusA.Hotkey = api.Key_SPACE
@@ -40,8 +83,8 @@ func Spawn(pool *ecs.Pool, w, h float64) {
 		panic(err)
 	}
 	TerminusB.AddAspect(ecs.C_POSITION, ecs.C_TERMINAL, ecs.C_BASE, ecs.C_TEAM_B, ecs.C_TARGETABLE, ecs.C_RESOURCE, ecs.C_ENERGYSTORE)
-	TerminusB.X = w / 2
-	TerminusB.Y = 3
+	TerminusB.X = 0.5
+	TerminusB.Y = 0 + 0.1
 	TerminusB.Rune = '♛'
 	TerminusB.Color = api.Color_RED
 	TerminusB.Resources = 1000
@@ -56,8 +99,8 @@ func Spawn(pool *ecs.Pool, w, h float64) {
 	// 		panic(err)
 	// 	}
 	// 	Patch.AddAspect(ecs.C_POSITION, ecs.C_TERMINAL, ecs.C_RESOURCE)
-	// 	Patch.X = rand.Float64()*(w-4) + 2
-	// 	Patch.Y = rand.Float64()*((h/2)-2) + 1
+	// 	Patch.X = rand.Float64()
+	// 	Patch.Y = rand.Float64()/2
 	// 	Patch.Rune = '⚛'
 	// 	Patch.Color = api.Color_BLUE
 	// 	Patch.Resources = float64(100 * (p + 1))
@@ -67,8 +110,8 @@ func Spawn(pool *ecs.Pool, w, h float64) {
 	// 		panic(err)
 	// 	}
 	// 	Mirror.AddAspect(ecs.C_POSITION, ecs.C_TERMINAL, ecs.C_RESOURCE)
-	// 	Mirror.X = w - Patch.X
-	// 	Mirror.Y = h - Patch.Y
+	// 	Mirror.X = 1 - Patch.X
+	// 	Mirror.Y = 1 - Patch.Y
 	// 	Mirror.Rune = '⚛'
 	// 	Mirror.Color = api.Color_BLUE
 	// 	Mirror.Resources = Patch.Resources
@@ -94,8 +137,8 @@ func Spawn(pool *ecs.Pool, w, h float64) {
 			panic(err)
 		}
 		p.AddAspect(ecs.C_POSITION, ecs.C_TERMINAL, ecs.C_RESOURCE)
-		p.X = w * patch.cx
-		p.Y = h * patch.cy
+		p.X = patch.cx
+		p.Y = patch.cy
 		p.Rune = '፨'
 		p.Color = api.Color_BLUE
 		p.Resources = patch.r
@@ -126,8 +169,8 @@ func Spawn(pool *ecs.Pool, w, h float64) {
 			panic(err)
 		}
 		p.AddAspect(ecs.C_POSITION, ecs.C_TERMINAL, ecs.C_WAYPOINT)
-		p.X = w * waypoint.cx
-		p.Y = h * waypoint.cy
+		p.X = waypoint.cx
+		p.Y = waypoint.cy
 		//p.Rune = 'ߜ'
 		//p.Rune = '.'
 		p.Rune = ' '
@@ -216,16 +259,17 @@ func Spawn(pool *ecs.Pool, w, h float64) {
 		panic(err)
 	}
 	Creep.AddAspect(ecs.C_POSITION, ecs.C_TERMINAL, ecs.C_ROTATION, ecs.C_VELOCITY, ecs.C_OBJECTIVES, ecs.C_SHOOTER, ecs.C_TEAM_B, ecs.C_TARGETABLE)
-	Creep.X = w / 2
-	Creep.Y = 2
+	Creep.X = 0.5
+	Creep.Y = 0 + 0.06
 	Creep.Rune = '☠'
 	Creep.Color = api.Color_RED
 	Creep.DX = 0
-	Creep.DY = 1
-	Creep.Speed = 0.0125
+	Creep.DY = 0.1
+	Creep.Speed = 0.00125
 	Creep.List = []*ecs.Objective{
-		&ecs.Objective{Entity: TerminusA, Range: 4},
+		&ecs.Objective{Entity: TerminusA, Range: 0.14},
 	}
 	Creep.Cool = 1
-	Creep.FireRange = 5
+	Creep.FireRange = 0.15
+
 }

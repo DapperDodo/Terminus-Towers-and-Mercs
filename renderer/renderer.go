@@ -65,21 +65,57 @@ func PollEvent() api.Key {
 	return api.Key_UNKNOWN
 }
 
-func Render(pool *ecs.Pool, w, h float64) {
+/* convert game coords to viewport coords */
+func CalcXY(gx, gy float64) (vx, vy int) {
+
+	// window
+	w, h := Size()
+
+	// viewport
+	vw := w - 1
+	vh := h - 6 - 1
+
+	// cam
+	cx, cy := 0.0, 0.0 // offset
+	cz := 1.0          // zoom
+
+	// character ratio
+	yratio := 2.0
+
+	// viewport offset
+	vo := ((float64(vw) - (float64(vh) * yratio)) / 2.0)
+
+	fx := float64(vh) * cz * yratio
+	fy := float64(vh) * cz
+
+	x := int((gx * fx) + cx + vo + 0.5)
+	y := int((gy * fy) + cy + 2 + 0.5)
+
+	return x, y
+}
+
+func Render(pool *ecs.Pool) {
+
+	// window
+	w, h := Size()
 
 	termbox.Clear(termbox.ColorBlack, termbox.ColorBlack)
 
-	for x := 0; x < int(w+0.5); x++ {
-		termbox.SetCell(x, int(h+0.5), '═', termbox.ColorWhite, termbox.ColorBlack)
+	// huds
+	for x := 0; x < w; x++ {
+		// top hud
+		termbox.SetCell(x, 1, '═', termbox.ColorWhite, termbox.ColorBlack)
+		// bottom hud
+		termbox.SetCell(x, h-4, '═', termbox.ColorWhite, termbox.ColorBlack)
 	}
 
 	// game entity layer
 	for _, e := range pool.Entities {
+		x, y := CalcXY(e.X, e.Y)
 		if e.HasAspect(ecs.C_POSITION, ecs.C_TERMINAL) {
-			termbox.SetCell(int(e.X+0.5), int(e.Y+0.5), e.Rune, colorToTerm(e.Color), colorToTerm(e.BgColor))
+			termbox.SetCell(x, y, e.Rune, colorToTerm(e.Color), colorToTerm(e.BgColor))
 		}
 	}
-
 	// overlays
 	for _, e := range pool.Entities {
 
@@ -102,13 +138,13 @@ func Render(pool *ecs.Pool, w, h float64) {
 				ly := line
 				switch line {
 				case 3, 4, 5:
-					lx = int(0.333 * w)
+					lx = int(0.333 * float64(w))
 					ly -= 3
 				case 6, 7, 8:
-					lx = int(0.667 * w)
+					lx = int(0.667 * float64(w))
 					ly -= 6
 				}
-				renderText(lx, int(h+0.5)+ly+1, text, termbox.ColorWhite)
+				renderText(lx, h-3+ly, text, termbox.ColorWhite)
 			}
 			if e.HasAspect(ecs.C_PATH) {
 				renderPath(e, termbox.ColorWhite)
@@ -119,7 +155,6 @@ func Render(pool *ecs.Pool, w, h float64) {
 			renderText(0, 0, "e:"+strconv.FormatFloat(e.Energy, 'f', 0, 64), termbox.ColorWhite)
 		}
 	}
-
 	termbox.Flush()
 }
 
@@ -130,28 +165,30 @@ func Render(pool *ecs.Pool, w, h float64) {
 func renderPath(e *ecs.Entity, color termbox.Attribute) {
 	if len(e.Waypoints) > 0 {
 		for _, waypoint := range e.Waypoints {
-			termbox.SetCell(int(waypoint.X+0.5), int(waypoint.Y+0.5), '߉', color, termbox.ColorBlack)
+			x, y := CalcXY(waypoint.X, waypoint.Y)
+			termbox.SetCell(x, y, '߉', color, termbox.ColorBlack)
 		}
 	}
 }
 
 func renderEntityHud(e *ecs.Entity, color termbox.Attribute, bold bool) {
+	x, y := CalcXY(e.X, e.Y)
 	if bold {
-		termbox.SetCell(int(e.X+0.5-1), int(e.Y+0.5-1), '┏', color, termbox.ColorBlack)
-		termbox.SetCell(int(e.X+0.5+1), int(e.Y+0.5-1), '┓', color, termbox.ColorBlack)
-		termbox.SetCell(int(e.X+0.5-1), int(e.Y+0.5+1), '┗', color, termbox.ColorBlack)
-		termbox.SetCell(int(e.X+0.5+1), int(e.Y+0.5+1), '┛', color, termbox.ColorBlack)
+		termbox.SetCell(x-1, y-1, '┏', color, termbox.ColorBlack)
+		termbox.SetCell(x+1, y-1, '┓', color, termbox.ColorBlack)
+		termbox.SetCell(x-1, y+1, '┗', color, termbox.ColorBlack)
+		termbox.SetCell(x+1, y+1, '┛', color, termbox.ColorBlack)
 	} else {
-		termbox.SetCell(int(e.X+0.5-1), int(e.Y+0.5-1), '┌', color, termbox.ColorBlack)
-		termbox.SetCell(int(e.X+0.5+1), int(e.Y+0.5-1), '┐', color, termbox.ColorBlack)
-		termbox.SetCell(int(e.X+0.5-1), int(e.Y+0.5+1), '└', color, termbox.ColorBlack)
-		termbox.SetCell(int(e.X+0.5+1), int(e.Y+0.5+1), '┘', color, termbox.ColorBlack)
+		termbox.SetCell(x-1, y-1, '┌', color, termbox.ColorBlack)
+		termbox.SetCell(x+1, y-1, '┐', color, termbox.ColorBlack)
+		termbox.SetCell(x-1, y+1, '└', color, termbox.ColorBlack)
+		termbox.SetCell(x+1, y+1, '┘', color, termbox.ColorBlack)
 	}
 	if e.HasAspect(ecs.C_RESOURCE) {
-		renderText(int(e.X+0.5+1)+1, int(e.Y+0.5-1)+3, "r:"+strconv.FormatFloat(e.Resources, 'f', 0, 64), color)
+		renderText(x+1+1, y-1+3, "r:"+strconv.FormatFloat(e.Resources, 'f', 0, 64), color)
 	}
 	if e.HasAspect(ecs.C_PAYROLL) {
-		renderText(int(e.X+0.5+1)+1, int(e.Y+0.5-1)+4, "c:"+strconv.FormatFloat(e.Burden, 'f', 0, 64), color)
+		renderText(x+1+1, y-1+4, "c:"+strconv.FormatFloat(e.Burden, 'f', 0, 64), color)
 	}
 }
 
