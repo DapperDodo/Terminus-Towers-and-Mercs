@@ -2,6 +2,7 @@ package ecs
 
 import (
 	"math"
+	"time"
 
 	"towmer/api"
 )
@@ -187,6 +188,10 @@ func Update(p *Pool, deltaTime float64) {
 
 		if e.HasAspect(C_CONTRACTING) {
 			contract(e, p)
+		}
+
+		if e.HasAspect(C_WAVESTART) {
+			wave(e, p, deltaTime)
 		}
 	}
 }
@@ -611,24 +616,59 @@ func contract(e *Entity, p *Pool) {
 
 	if e.Signed {
 
-		if e.Party == 0 {
-			e.Party = 1
-		}
-
-		c := &Contract{e.Guild, e.Merc, e.Party, float64(1 * e.Party)}
+		c := &Contract{e.Guild, e.Merc, 5.0, e, time.Now()}
 
 		e.Burden += c.Cost
 
 		if !e.HasAspect(C_PAYROLL) {
 			e.AddAspect(C_PAYROLL)
 			e.Contracts = []*Contract{c}
-		} else if e.Tail {
-			e.Contracts = append(e.Contracts, c)
 		} else {
-			e.Contracts = append([]*Contract{c}, e.Contracts...)
+			e.Contracts = append(e.Contracts, c)
 		}
 
 		e.DelAspect(C_CONTRACTING)
 		e.Info = api.InfoBaseMainMenu
+	}
+}
+
+func wave(e *Entity, p *Pool, dt float64) {
+
+	if len(e.Tickets) > 0 {
+		if e.Tickets[0].WaitForIt < 1.0 {
+
+			e.Tickets[0].WaitForIt += dt
+
+		} else {
+
+			// spawn merc
+			merc, err := p.AddEntity()
+			if err != nil {
+				panic(err)
+			}
+			merc.AddAspect(C_POSITION, C_TERMINAL, C_ROTATION, C_VELOCITY, C_OBJECTIVES, C_SHOOTER, C_TARGETABLE)
+			merc.X = e.X
+			merc.Y = e.Y
+			merc.Rune = '.' //'ߜ'
+			merc.Speed = 0.000225
+			merc.List = make([]*Objective, len(e.Waypoints))
+			for idx, waypoint := range e.Waypoints {
+				merc.List[idx] = &Objective{Entity: waypoint, Range: 0.0025}
+			}
+			if e.Has(C_TEAM_A) {
+				merc.Add(C_TEAM_A)
+				merc.Color = api.Color_GREEN
+			} else {
+				merc.Add(C_TEAM_B)
+				merc.Color = api.Color_RED
+			}
+			merc.Cool = 1
+			merc.FireRange = 0.15
+
+			// started, so remove ticket
+			e.Tickets = e.Tickets[1:]
+		}
+	} else {
+		e.DelAspect(C_WAVESTART)
 	}
 }

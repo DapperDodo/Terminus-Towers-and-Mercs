@@ -135,7 +135,7 @@ func Render(pool *ecs.Pool) {
 			}
 		}
 
-		if e.HasAspect(ecs.C_BASE, ecs.C_TEAM_A, ecs.C_ENERGYSTORE) && len(e.Downstream) == 0 {
+		if e.HasAspect(ecs.C_MAIN, ecs.C_TEAM_A, ecs.C_ENERGYSTORE) {
 			renderText(0, 0, "e:"+strconv.FormatFloat(e.Energy, 'f', 0, 64), termbox.ColorWhite)
 		}
 	}
@@ -175,7 +175,10 @@ func renderEntityHud(e *ecs.Entity, color termbox.Attribute, bold bool) {
 			renderText(x+1+1, y-1+3, "r:"+strconv.FormatFloat(e.Resources, 'f', 0, 64), color)
 		}
 		if e.HasAspect(ecs.C_PAYROLL) {
-			renderText(x+1+1, y-1+4, "c:"+strconv.FormatFloat(e.Burden, 'f', 0, 64), color)
+			renderText(x+1+1, y-1+4, "c:"+strconv.Itoa(len(e.Contracts)), color)
+		}
+		if e.HasAspect(ecs.C_WAVESTART) {
+			renderText(x+1+1, y-1+5, "w:"+strconv.Itoa(len(e.Tickets)), color)
 		}
 	}
 }

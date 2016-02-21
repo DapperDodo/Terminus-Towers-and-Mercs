@@ -25,9 +25,11 @@ func main() {
 		}
 	}()
 
-	pool := ecs.NewPool(100)
+	pool := ecs.NewPool(10000)
 
 	game.Spawn(pool)
+
+	wavetimer := time.NewTicker(time.Second * 75)
 
 gameloop:
 	for {
@@ -41,6 +43,8 @@ gameloop:
 			default:
 				ecs.Control(pool, key)
 			}
+		case <-wavetimer.C:
+			ecs.WaveStart(pool)
 		default:
 			ecs.Update(pool, 0.01)
 			renderer.Render(pool)

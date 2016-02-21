@@ -16,6 +16,7 @@ const (
 	C_ROTATION
 	C_VELOCITY
 	C_TERMINAL
+	C_MAIN
 	C_TEAM_A
 	C_TEAM_B
 	C_BASE
@@ -38,6 +39,7 @@ const (
 	C_PATH
 	C_CONTRACTING
 	C_PAYROLL
+	C_WAVESTART
 )
 
 type Position struct {
@@ -59,6 +61,10 @@ type Terminal struct {
 	*Component
 	Rune           rune
 	Color, BgColor api.Color
+}
+
+type Main struct {
+	*Component
 }
 
 type TeamA struct {
@@ -173,8 +179,6 @@ type Contracting struct {
 	*Component
 	Guild
 	Merc
-	Party  int
-	Tail   bool
 	Signed bool
 }
 
@@ -182,4 +186,9 @@ type Payroll struct {
 	*Component
 	Contracts []*Contract
 	Burden    float64
+}
+
+type Wavestart struct {
+	*Component
+	Tickets []*Ticket
 }

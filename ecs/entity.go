@@ -9,6 +9,7 @@ type Entity struct {
 	*Rotation
 	*Velocity
 	*Terminal
+	*Main
 	*TeamA
 	*TeamB
 	*Base
@@ -31,6 +32,7 @@ type Entity struct {
 	*Path
 	*Contracting
 	*Payroll
+	*Wavestart
 }
 
 func (e *Entity) AddAspect(aspect ...ComponentType) {
@@ -66,6 +68,8 @@ func (e *Entity) Add(t ComponentType) {
 		e.Velocity.Active = true
 	case C_TERMINAL:
 		e.Terminal.Active = true
+	case C_MAIN:
+		e.Main.Active = true
 	case C_TEAM_A:
 		e.TeamA.Active = true
 	case C_TEAM_B:
@@ -110,6 +114,8 @@ func (e *Entity) Add(t ComponentType) {
 		e.Contracting.Active = true
 	case C_PAYROLL:
 		e.Payroll.Active = true
+	case C_WAVESTART:
+		e.Wavestart.Active = true
 	}
 }
 
@@ -131,6 +137,8 @@ func (e *Entity) Del(t ComponentType) {
 		e.Rune = '?'
 		e.Color = api.Color_UNKNOWN
 		e.BgColor = api.Color_UNKNOWN
+	case C_MAIN:
+		e.Main.Active = false
 	case C_TEAM_A:
 		e.TeamA.Active = false
 	case C_TEAM_B:
@@ -194,13 +202,14 @@ func (e *Entity) Del(t ComponentType) {
 		e.Contracting.Active = false
 		e.Guild = 0
 		e.Merc = 0
-		e.Party = 0
-		e.Tail = false
 		e.Signed = false
 	case C_PAYROLL:
 		e.Payroll.Active = false
 		e.Contracts = nil
 		e.Burden = 0
+	case C_WAVESTART:
+		e.Wavestart.Active = false
+		e.Tickets = nil
 	}
 }
 
@@ -214,6 +223,8 @@ func (e *Entity) Has(t ComponentType) bool {
 		return e.Velocity.Active
 	case C_TERMINAL:
 		return e.Terminal.Active
+	case C_MAIN:
+		return e.Main.Active
 	case C_TEAM_A:
 		return e.TeamA.Active
 	case C_TEAM_B:
@@ -258,6 +269,8 @@ func (e *Entity) Has(t ComponentType) bool {
 		return e.Contracting.Active
 	case C_PAYROLL:
 		return e.Payroll.Active
+	case C_WAVESTART:
+		return e.Wavestart.Active
 	}
 	return false
 }

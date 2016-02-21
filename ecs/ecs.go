@@ -40,6 +40,7 @@ func (p *Pool) AddEntity() (*Entity, error) {
 		&Rotation{&Component{}, 0, 0},
 		&Velocity{&Component{}, 0},
 		&Terminal{&Component{}, '?', api.Color_UNKNOWN, api.Color_UNKNOWN},
+		&Main{&Component{}},
 		&TeamA{&Component{}},
 		&TeamB{&Component{}},
 		&Base{&Component{}},
@@ -60,8 +61,9 @@ func (p *Pool) AddEntity() (*Entity, error) {
 		&Waypoint{&Component{}, nil},
 		&Pathbuilding{&Component{}},
 		&Path{&Component{}, nil},
-		&Contracting{&Component{}, 0, 0, 0, false, false},
+		&Contracting{&Component{}, 0, 0, false},
 		&Payroll{&Component{}, nil, 0},
+		&Wavestart{&Component{}, nil},
 	}
 	p.Entities = append(p.Entities, e)
 

@@ -66,14 +66,15 @@ func Spawn(pool *ecs.Pool) {
 	if err != nil {
 		panic(err)
 	}
-	TerminusA.AddAspect(ecs.C_POSITION, ecs.C_TERMINAL, ecs.C_BASE, ecs.C_TEAM_A, ecs.C_TARGETABLE, ecs.C_SELECTED, ecs.C_RESOURCE, ecs.C_ENERGYSTORE)
+	TerminusA.AddAspect(ecs.C_POSITION, ecs.C_TERMINAL, ecs.C_BASE, ecs.C_MAIN, ecs.C_TEAM_A, ecs.C_TARGETABLE, ecs.C_SELECTED, ecs.C_RESOURCE, ecs.C_ENERGYSTORE)
 	TerminusA.X = 0.5
 	TerminusA.Y = 1 - 0.1
 	TerminusA.Rune = '♛'
 	TerminusA.Color = api.Color_GREEN
 	TerminusA.Hotkey = api.Key_SPACE
 	TerminusA.Info = api.InfoBaseMainMenu
-	TerminusA.Resources = 1000
+	TerminusA.Resources = 500
+	//TerminusA.Tickets = []*Ticket{{Guild: Guild_RANGERS, Merc: Merc_ARCHER, Seniority: time.Now()}}
 
 	///////////////////////////////////////////////
 	// Enemy Base
@@ -82,12 +83,12 @@ func Spawn(pool *ecs.Pool) {
 	if err != nil {
 		panic(err)
 	}
-	TerminusB.AddAspect(ecs.C_POSITION, ecs.C_TERMINAL, ecs.C_BASE, ecs.C_TEAM_B, ecs.C_TARGETABLE, ecs.C_RESOURCE, ecs.C_ENERGYSTORE)
+	TerminusB.AddAspect(ecs.C_POSITION, ecs.C_TERMINAL, ecs.C_BASE, ecs.C_MAIN, ecs.C_TEAM_B, ecs.C_TARGETABLE, ecs.C_RESOURCE, ecs.C_ENERGYSTORE)
 	TerminusB.X = 0.5
 	TerminusB.Y = 0 + 0.1
 	TerminusB.Rune = '♛'
 	TerminusB.Color = api.Color_RED
-	TerminusB.Resources = 1000
+	TerminusB.Resources = 500
 
 	///////////////////////////////////////////////
 	// Patches
@@ -96,14 +97,14 @@ func Spawn(pool *ecs.Pool) {
 		cx, cy, r float64
 		e         *ecs.Entity
 	}{
-		// "topleftclose":     {0.33, 0.2, 900, nil},
-		// "topleftfar":       {0.15, 0.35, 600, nil},
-		// "toprightclose":    {0.66, 0.2, 900, nil},
-		// "toprightfar":      {0.85, 0.35, 600, nil},
-		"bottomleftclose":  {0.33, 0.8, 900, nil},
-		"bottomleftfar":    {0.15, 0.65, 600, nil},
-		"bottomrightclose": {0.66, 0.8, 900, nil},
-		"bottomrightfar":   {0.85, 0.65, 600, nil},
+		// "topleftclose":     {0.33, 0.2, 450, nil},
+		// "topleftfar":       {0.15, 0.35, 300, nil},
+		// "toprightclose":    {0.66, 0.2, 450, nil},
+		// "toprightfar":      {0.85, 0.35, 300, nil},
+		"bottomleftclose":  {0.33, 0.8, 450, nil},
+		"bottomleftfar":    {0.15, 0.65, 300, nil},
+		"bottomrightclose": {0.66, 0.8, 450, nil},
+		"bottomrightfar":   {0.85, 0.65, 300, nil},
 	}
 	for _, patch := range patches {
 
