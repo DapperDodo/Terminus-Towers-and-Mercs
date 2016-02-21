@@ -1,0 +1,2 @@
+- create paths for base contracts
+
