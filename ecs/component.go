@@ -1,7 +1,7 @@
 package ecs
 
 import (
-	"towmer/api"
+	"github.com/DapperDodo/Terminus-Towers-and-Mercs/api"
 )
 
 type Component struct {

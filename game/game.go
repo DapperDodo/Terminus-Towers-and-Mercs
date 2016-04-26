@@ -4,8 +4,8 @@ import (
 	"math/rand"
 	"time"
 
-	"towmer/api"
-	"towmer/ecs"
+	"github.com/DapperDodo/Terminus-Towers-and-Mercs/api"
+	"github.com/DapperDodo/Terminus-Towers-and-Mercs/ecs"
 )
 
 var Hero, Creep, TerminusA, TerminusB, Outpost1, Outpost2, Patch1, Patch2, Patch3 *ecs.Entity

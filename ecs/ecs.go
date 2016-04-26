@@ -3,7 +3,7 @@ package ecs
 import (
 	"errors"
 
-	"towmer/api"
+	"github.com/DapperDodo/Terminus-Towers-and-Mercs/api"
 )
 
 type Pool struct {

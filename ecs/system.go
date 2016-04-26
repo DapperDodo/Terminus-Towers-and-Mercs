@@ -4,7 +4,7 @@ import (
 	"math"
 	"time"
 
-	"towmer/api"
+	"github.com/DapperDodo/Terminus-Towers-and-Mercs/api"
 )
 
 func Control(p *Pool, key api.Key) {

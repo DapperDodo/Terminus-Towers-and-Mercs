@@ -3,8 +3,8 @@ package renderer
 import (
 	"strconv"
 
-	"towmer/api"
-	"towmer/ecs"
+	"github.com/DapperDodo/Terminus-Towers-and-Mercs/api"
+	"github.com/DapperDodo/Terminus-Towers-and-Mercs/ecs"
 
 	"github.com/nsf/termbox-go"
 )

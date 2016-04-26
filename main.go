@@ -3,10 +3,10 @@ package main
 import (
 	"time"
 
-	"towmer/api"
-	"towmer/ecs"
-	"towmer/game"
-	"towmer/renderer"
+	"github.com/DapperDodo/Terminus-Towers-and-Mercs/api"
+	"github.com/DapperDodo/Terminus-Towers-and-Mercs/ecs"
+	"github.com/DapperDodo/Terminus-Towers-and-Mercs/game"
+	"github.com/DapperDodo/Terminus-Towers-and-Mercs/renderer"
 )
 
 func main() {
