@@ -129,32 +129,45 @@ func init() {
 
 	var merc *Entity
 
+	/*
+		TODO:
+		shooting does damage to enemy
+		enemy dies when health < 0
+		archer stops when target in range
+		merc costs variable amount of money
+	*/
 	merc = NewEntity()
-	merc.AddAspect(C_POSITION, C_TERMINAL, C_ROTATION, C_VELOCITY, C_OBJECTIVES, C_SHOOTER, C_TARGETABLE)
-	merc.Rune = 'a' //'ߜ'
+	merc.AddAspect(C_POSITION, C_TERMINAL, C_ROTATION, C_VELOCITY, C_OBJECTIVES, C_DAMAGER, C_SHOOTER, C_TARGETABLE, C_HEALTH)
+	merc.Rune = 'a'
 	merc.Speed = 0.000225
+	merc.Damage = 5
 	merc.Cool = 1
 	merc.FireRange = 0.2
+	merc.Hitpoints = 100
 	prefabs[Merc_ARCHER] = merc
 
 	merc = NewEntity()
-	merc.AddAspect(C_POSITION, C_TERMINAL, C_ROTATION, C_VELOCITY, C_OBJECTIVES, C_SHOOTER, C_TARGETABLE)
-	merc.Rune = 'h' //'ߜ'
+	merc.AddAspect(C_POSITION, C_TERMINAL, C_ROTATION, C_VELOCITY, C_OBJECTIVES, C_DAMAGER, C_SHOOTER, C_TARGETABLE, C_HEALTH)
+	merc.Rune = 'h'
 	merc.Speed = 0.000225
+	merc.Damage = 7
 	merc.Cool = 0.5
 	merc.FireRange = 0.1
+	merc.Hitpoints = 125
 	prefabs[Merc_HUNTER] = merc
 
 	merc = NewEntity()
-	merc.AddAspect(C_POSITION, C_TERMINAL, C_ROTATION, C_VELOCITY, C_OBJECTIVES, C_TARGETABLE)
-	merc.Rune = 'b' //'ߜ'
+	merc.AddAspect(C_POSITION, C_TERMINAL, C_ROTATION, C_VELOCITY, C_OBJECTIVES, C_DAMAGER, C_TARGETABLE, C_HEALTH)
+	merc.Rune = 'b'
 	merc.Speed = 0.000225
+	merc.Hitpoints = 100
 	prefabs[Merc_BRAWLER] = merc
 
 	merc = NewEntity()
-	merc.AddAspect(C_POSITION, C_TERMINAL, C_ROTATION, C_VELOCITY, C_OBJECTIVES, C_TARGETABLE)
-	merc.Rune = 'g' //'ߜ'
+	merc.AddAspect(C_POSITION, C_TERMINAL, C_ROTATION, C_VELOCITY, C_OBJECTIVES, C_DAMAGER, C_TARGETABLE, C_HEALTH)
+	merc.Rune = 'g'
 	merc.Speed = 0.000225
+	merc.Hitpoints = 150
 	prefabs[Merc_GLADIATOR] = merc
 }
 

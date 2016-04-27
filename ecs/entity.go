@@ -14,10 +14,13 @@ type Entity struct {
 	*TeamB
 	*Base
 	*Objectives
+	*Reached
+	*Damager
 	*Shooter
 	*Cooldown
 	*Bullet
 	*Targetable
+	*Health
 	*Dying
 	*Baseselection
 	*Selected
@@ -46,11 +49,14 @@ func NewEntity() *Entity {
 		&TeamA{&Component{}},
 		&TeamB{&Component{}},
 		&Base{&Component{}},
-		&Objectives{&Component{}, nil, nil},
+		&Objectives{&Component{}, nil},
+		&Reached{&Component{}, nil},
+		&Damager{&Component{}, 0},
 		&Shooter{&Component{}, 0, 0},
 		&Cooldown{&Component{}, 0},
 		&Bullet{&Component{}},
 		&Targetable{&Component{}},
+		&Health{&Component{}, 0},
 		&Dying{&Component{}, 0, 0},
 		&Baseselection{&Component{}, 0},
 		&Selected{&Component{}, nil},
@@ -112,6 +118,10 @@ func (e *Entity) Add(t ComponentType) {
 		e.Base.Active = true
 	case C_OBJECTIVES:
 		e.Objectives.Active = true
+	case C_REACHED:
+		e.Reached.Active = true
+	case C_DAMAGER:
+		e.Damager.Active = true
 	case C_SHOOTER:
 		e.Shooter.Active = true
 	case C_COOLDOWN:
@@ -120,6 +130,8 @@ func (e *Entity) Add(t ComponentType) {
 		e.Bullet.Active = true
 	case C_TARGETABLE:
 		e.Targetable.Active = true
+	case C_HEALTH:
+		e.Health.Active = true
 	case C_DYING:
 		e.Dying.Active = true
 	case C_BASESELECTION:
@@ -182,7 +194,12 @@ func (e *Entity) Del(t ComponentType) {
 	case C_OBJECTIVES:
 		e.Objectives.Active = false
 		e.List = nil
+	case C_REACHED:
+		e.Reached.Active = false
 		e.lastReached = nil
+	case C_DAMAGER:
+		e.Damager.Active = false
+		e.Damage = 0
 	case C_SHOOTER:
 		e.Shooter.Active = false
 		e.Cool = 0
@@ -194,6 +211,9 @@ func (e *Entity) Del(t ComponentType) {
 		e.Bullet.Active = false
 	case C_TARGETABLE:
 		e.Targetable.Active = false
+	case C_HEALTH:
+		e.Health.Active = false
+		e.Hitpoints = 0
 	case C_DYING:
 		e.Dying.Active = false
 		e.TimeToLive = 0
@@ -267,6 +287,10 @@ func (e *Entity) Has(t ComponentType) bool {
 		return e.Base.Active
 	case C_OBJECTIVES:
 		return e.Objectives.Active
+	case C_REACHED:
+		return e.Reached.Active
+	case C_DAMAGER:
+		return e.Damager.Active
 	case C_SHOOTER:
 		return e.Shooter.Active
 	case C_COOLDOWN:
@@ -275,6 +299,8 @@ func (e *Entity) Has(t ComponentType) bool {
 		return e.Bullet.Active
 	case C_TARGETABLE:
 		return e.Targetable.Active
+	case C_HEALTH:
+		return e.Health.Active
 	case C_DYING:
 		return e.Dying.Active
 	case C_BASESELECTION:
@@ -329,7 +355,10 @@ func (e *Entity) Clone(p *Entity) {
 	e.Base.Active = p.Base.Active
 	e.Objectives.Active = p.Objectives.Active
 	e.List = p.List
+	e.Reached.Active = p.Reached.Active
 	e.lastReached = p.lastReached
+	e.Damager.Active = p.Damager.Active
+	e.Damage = p.Damage
 	e.Shooter.Active = p.Shooter.Active
 	e.Cool = p.Cool
 	e.FireRange = p.FireRange
@@ -337,6 +366,8 @@ func (e *Entity) Clone(p *Entity) {
 	e.current = p.current
 	e.Bullet.Active = p.Bullet.Active
 	e.Targetable.Active = p.Targetable.Active
+	e.Health.Active = p.Health.Active
+	e.Hitpoints = p.Hitpoints
 	e.Dying.Active = p.Dying.Active
 	e.TimeToLive = p.TimeToLive
 	e.sickbed = p.sickbed

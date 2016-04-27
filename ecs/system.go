@@ -183,6 +183,10 @@ func Update(p *Pool, deltaTime float64) {
 			hit(e)
 		}
 
+		if e.HasAspect(C_HEALTH) {
+			checkHealth(e)
+		}
+
 		if e.HasAspect(C_TABBABLE, C_BASESELECTION) {
 			selectBase(e, p)
 		}
@@ -279,21 +283,25 @@ func checkObjective(e *Entity) {
 
 		if math.Sqrt(math.Pow(e.X-targetX, 2)+math.Pow(e.Y-targetY, 2)) < e.Objectives.List[0].Range {
 
-			e.Objectives.lastReached = e.Objectives.List[0]
+			last := e.Objectives.List[0]
 			e.Objectives.List = e.Objectives.List[1:]
-		}
-	}
 
-	if len(e.Objectives.List) == 0 {
-		e.Del(C_OBJECTIVES)
-		e.Del(C_VELOCITY)
-		e.Del(C_ROTATION)
+			if len(e.Objectives.List) == 0 {
+				e.Add(C_REACHED)
+				e.lastReached = last
+				e.DelAspect(C_OBJECTIVES, C_VELOCITY, C_ROTATION)
+			}
+		}
 	}
 }
 
 func fire(e *Entity, p *Pool) {
 
 	if e.Has(C_COOLDOWN) {
+		return
+	}
+
+	if !e.Has(C_DAMAGER) {
 		return
 	}
 
@@ -319,7 +327,8 @@ func fire(e *Entity, p *Pool) {
 		if err != nil {
 			panic(err)
 		}
-		bullet.AddAspect(C_POSITION, C_TERMINAL, C_VELOCITY, C_OBJECTIVES, C_BULLET)
+		bullet.AddAspect(C_POSITION, C_TERMINAL, C_VELOCITY, C_OBJECTIVES, C_BULLET, C_DAMAGER)
+		bullet.Damage = e.Damage
 		bullet.X = e.X
 		bullet.Y = e.Y
 		bullet.Rune = '.'
@@ -348,15 +357,29 @@ func cooldown(e *Entity, dt float64) {
 
 func hit(e *Entity) {
 
-	if len(e.Objectives.List) == 0 {
+	if e.Has(C_REACHED) {
 
-		//damage: e.Objectives.lastReached
+		if e.lastReached.Has(C_HEALTH) {
+			e.lastReached.Hitpoints -= e.Damage
+		}
 
 		e.Rune = '⚡'
 		e.Color = api.Color_WHITE
-		e.DelAspect(C_ROTATION, C_VELOCITY, C_TEAM_A, C_TEAM_B, C_BASE, C_OBJECTIVES, C_SHOOTER, C_COOLDOWN, C_BULLET)
+		e.DelAspect(C_ROTATION, C_VELOCITY, C_TEAM_A, C_TEAM_B, C_BASE, C_OBJECTIVES, C_SHOOTER, C_COOLDOWN, C_BULLET, C_DAMAGER, C_REACHED)
 		e.Add(C_DYING)
 		e.TimeToLive = 0.075
+		e.sickbed = 0
+	}
+}
+
+func checkHealth(e *Entity) {
+
+	if e.Hitpoints <= 0 {
+		e.Rune = 'x'
+		e.Color = api.Color_WHITE
+		e.DelAspect(C_ROTATION, C_VELOCITY, C_TEAM_A, C_TEAM_B, C_BASE, C_OBJECTIVES, C_SHOOTER, C_COOLDOWN, C_BULLET, C_DAMAGER, C_HEALTH)
+		e.Add(C_DYING)
+		e.TimeToLive = 1
 		e.sickbed = 0
 	}
 }

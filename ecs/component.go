@@ -21,10 +21,13 @@ const (
 	C_TEAM_B
 	C_BASE
 	C_OBJECTIVES
+	C_REACHED
+	C_DAMAGER
 	C_SHOOTER
 	C_COOLDOWN
 	C_BULLET
 	C_TARGETABLE
+	C_HEALTH
 	C_DYING
 	C_BASESELECTION
 	C_SELECTED
@@ -81,8 +84,7 @@ type Base struct {
 
 type Objectives struct {
 	*Component
-	List        []*Objective
-	lastReached *Objective
+	List []*Objective
 }
 
 type Objective struct {
@@ -96,6 +98,16 @@ func (o Objective) Point() (x, y float64) {
 		return o.Entity.X, o.Entity.Y
 	}
 	return o.X, o.Y
+}
+
+type Reached struct {
+	*Component
+	lastReached *Objective
+}
+
+type Damager struct {
+	*Component
+	Damage float64
 }
 
 type Shooter struct {
@@ -114,6 +126,11 @@ type Bullet struct {
 
 type Targetable struct {
 	*Component
+}
+
+type Health struct {
+	*Component
+	Hitpoints float64
 }
 
 type Dying struct {

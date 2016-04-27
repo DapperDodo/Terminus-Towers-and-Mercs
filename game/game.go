@@ -66,7 +66,7 @@ func Spawn(pool *ecs.Pool) {
 	if err != nil {
 		panic(err)
 	}
-	TerminusA.AddAspect(ecs.C_POSITION, ecs.C_TERMINAL, ecs.C_BASE, ecs.C_MAIN, ecs.C_TEAM_A, ecs.C_TARGETABLE, ecs.C_SELECTED, ecs.C_RESOURCE, ecs.C_ENERGYSTORE)
+	TerminusA.AddAspect(ecs.C_POSITION, ecs.C_TERMINAL, ecs.C_BASE, ecs.C_MAIN, ecs.C_TEAM_A, ecs.C_TARGETABLE, ecs.C_SELECTED, ecs.C_RESOURCE, ecs.C_ENERGYSTORE, ecs.C_HEALTH)
 	TerminusA.X = 0.5
 	TerminusA.Y = 1 - 0.1
 	TerminusA.Rune = '♛'
@@ -75,6 +75,7 @@ func Spawn(pool *ecs.Pool) {
 	TerminusA.Info = api.InfoBaseMainMenu
 	TerminusA.Resources = 500
 	//TerminusA.Tickets = []*Ticket{{Guild: Guild_RANGERS, Merc: Merc_ARCHER, Seniority: time.Now()}}
+	TerminusA.Hitpoints = 1000
 
 	///////////////////////////////////////////////
 	// Enemy Base
@@ -83,12 +84,13 @@ func Spawn(pool *ecs.Pool) {
 	if err != nil {
 		panic(err)
 	}
-	TerminusB.AddAspect(ecs.C_POSITION, ecs.C_TERMINAL, ecs.C_BASE, ecs.C_MAIN, ecs.C_TEAM_B, ecs.C_TARGETABLE, ecs.C_RESOURCE, ecs.C_ENERGYSTORE)
+	TerminusB.AddAspect(ecs.C_POSITION, ecs.C_TERMINAL, ecs.C_BASE, ecs.C_MAIN, ecs.C_TEAM_B, ecs.C_TARGETABLE, ecs.C_RESOURCE, ecs.C_ENERGYSTORE, ecs.C_HEALTH)
 	TerminusB.X = 0.5
 	TerminusB.Y = 0 + 0.1
 	TerminusB.Rune = '♛'
 	TerminusB.Color = api.Color_RED
 	TerminusB.Resources = 500
+	TerminusB.Hitpoints = 1000
 
 	///////////////////////////////////////////////
 	// Patches
@@ -191,7 +193,7 @@ func Spawn(pool *ecs.Pool) {
 	if err != nil {
 		panic(err)
 	}
-	Creep.AddAspect(ecs.C_POSITION, ecs.C_TERMINAL, ecs.C_ROTATION, ecs.C_VELOCITY, ecs.C_OBJECTIVES, ecs.C_SHOOTER, ecs.C_TEAM_B, ecs.C_TARGETABLE)
+	Creep.AddAspect(ecs.C_POSITION, ecs.C_TERMINAL, ecs.C_ROTATION, ecs.C_VELOCITY, ecs.C_OBJECTIVES, ecs.C_SHOOTER, ecs.C_TEAM_B, ecs.C_TARGETABLE, ecs.C_HEALTH)
 	Creep.X = 0.5
 	Creep.Y = 0 + 0.06
 	Creep.Rune = '☠'
@@ -202,6 +204,7 @@ func Spawn(pool *ecs.Pool) {
 	}
 	Creep.Cool = 1
 	Creep.FireRange = 0.15
+	Creep.Hitpoints = 100
 
 	///////////////////////////////////////////////
 	// Test Units
