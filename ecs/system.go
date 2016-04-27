@@ -375,11 +375,11 @@ func hit(e *Entity) {
 func checkHealth(e *Entity) {
 
 	if e.Hitpoints <= 0 {
-		e.Rune = 'x'
+		e.Rune = '☨'
 		e.Color = api.Color_WHITE
 		e.DelAspect(C_ROTATION, C_VELOCITY, C_TEAM_A, C_TEAM_B, C_BASE, C_OBJECTIVES, C_SHOOTER, C_COOLDOWN, C_BULLET, C_DAMAGER, C_HEALTH)
 		e.Add(C_DYING)
-		e.TimeToLive = 1
+		e.TimeToLive = 3
 		e.sickbed = 0
 	}
 }

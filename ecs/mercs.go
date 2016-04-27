@@ -131,8 +131,6 @@ func init() {
 
 	/*
 		TODO:
-		shooting does damage to enemy
-		enemy dies when health < 0
 		archer stops when target in range
 		merc costs variable amount of money
 	*/

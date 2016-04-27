@@ -193,15 +193,16 @@ func Spawn(pool *ecs.Pool) {
 	if err != nil {
 		panic(err)
 	}
-	Creep.AddAspect(ecs.C_POSITION, ecs.C_TERMINAL, ecs.C_ROTATION, ecs.C_VELOCITY, ecs.C_OBJECTIVES, ecs.C_SHOOTER, ecs.C_TEAM_B, ecs.C_TARGETABLE, ecs.C_HEALTH)
+	Creep.AddAspect(ecs.C_POSITION, ecs.C_TERMINAL, ecs.C_ROTATION, ecs.C_VELOCITY, ecs.C_OBJECTIVES, ecs.C_DAMAGER, ecs.C_SHOOTER, ecs.C_TEAM_B, ecs.C_TARGETABLE, ecs.C_HEALTH)
 	Creep.X = 0.5
 	Creep.Y = 0 + 0.06
 	Creep.Rune = '☠'
 	Creep.Color = api.Color_RED
-	Creep.Speed = 0.00125
+	Creep.Speed = 0.000225
 	Creep.List = []*ecs.Objective{
 		&ecs.Objective{Entity: TerminusA, Range: 0.14},
 	}
+	Creep.Damage = 20
 	Creep.Cool = 1
 	Creep.FireRange = 0.15
 	Creep.Hitpoints = 100
