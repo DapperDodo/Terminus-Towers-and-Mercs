@@ -2,8 +2,6 @@ package ecs
 
 import (
 	"errors"
-
-	"towmer/api"
 )
 
 type Pool struct {
@@ -35,37 +33,21 @@ func (p *Pool) AddEntity() (*Entity, error) {
 		return nil, err
 	}
 
-	e := &Entity{
-		&Position{&Component{}, 0, 0},
-		&Rotation{&Component{}, 0, 0},
-		&Velocity{&Component{}, 0},
-		&Terminal{&Component{}, '?', api.Color_UNKNOWN, api.Color_UNKNOWN},
-		&Main{&Component{}},
-		&TeamA{&Component{}},
-		&TeamB{&Component{}},
-		&Base{&Component{}},
-		&Objectives{&Component{}, nil, nil},
-		&Shooter{&Component{}, 0, 0},
-		&Cooldown{&Component{}, 0},
-		&Bullet{&Component{}},
-		&Targetable{&Component{}},
-		&Dying{&Component{}, 0, 0},
-		&Baseselection{&Component{}, 0},
-		&Selected{&Component{}, nil},
-		&Basebuilding{&Component{}},
-		&Resource{&Component{}, 0},
-		&Tabbable{&Component{}, false, false},
-		&Energynode{&Component{}, nil, nil, 0},
-		&Energystore{&Component{}, 0},
-		&Target{&Component{}, nil},
-		&Waypoint{&Component{}, nil},
-		&Pathbuilding{&Component{}},
-		&Path{&Component{}, nil},
-		&Contracting{&Component{}, 0, 0, false},
-		&Payroll{&Component{}, nil, 0},
-		&Wavestart{&Component{}, nil},
-	}
+	e := NewEntity()
+
 	p.Entities = append(p.Entities, e)
+
+	return e, nil
+}
+
+func (p *Pool) CloneEntity(prefab *Entity) (*Entity, error) {
+
+	e, err := p.AddEntity()
+	if err != nil {
+		return nil, err
+	}
+
+	e.Clone(prefab)
 
 	return e, nil
 }

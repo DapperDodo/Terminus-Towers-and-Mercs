@@ -60,13 +60,13 @@ func Control(p *Pool, key api.Key) {
 		return
 	}
 
-	// if key == api.Key_H {
-	// 	selected := p.ListAspect(C_SELECTED, C_CONTRACTING)
-	// 	if len(selected) > 0 {
-	// 		selected[0].Merc = Merc_HUNTER
-	// 	}
-	// 	return
-	// }
+	if key == api.Key_H {
+		selected := p.ListAspect(C_SELECTED, C_CONTRACTING)
+		if len(selected) > 0 {
+			selected[0].Merc = Merc_HUNTER
+		}
+		return
+	}
 
 	if key == api.Key_R {
 		selected := p.ListAspect(C_SELECTED, C_CONTRACTING)
@@ -607,7 +607,7 @@ func contract(e *Entity, p *Pool) {
 
 	// merc already selected?
 	switch e.Merc {
-	case Merc_ARCHER:
+	case Merc_ARCHER, Merc_HUNTER:
 		e.Info = api.InfoContractSign
 	default:
 		e.Signed = false
@@ -642,15 +642,15 @@ func wave(e *Entity, p *Pool, dt float64) {
 		} else {
 
 			// spawn merc
-			merc, err := p.AddEntity()
+			merc, err := p.CloneEntity(MercPrefab(e.Tickets[0].Merc))
 			if err != nil {
 				panic(err)
 			}
-			merc.AddAspect(C_POSITION, C_TERMINAL, C_ROTATION, C_VELOCITY, C_OBJECTIVES, C_SHOOTER, C_TARGETABLE)
+			if merc == nil {
+				panic("merc is nil")
+			}
 			merc.X = e.X
 			merc.Y = e.Y
-			merc.Rune = '.' //'ߜ'
-			merc.Speed = 0.000225
 			merc.List = make([]*Objective, len(e.Waypoints))
 			for idx, waypoint := range e.Waypoints {
 				merc.List[idx] = &Objective{Entity: waypoint, Range: 0.0025}
@@ -662,8 +662,6 @@ func wave(e *Entity, p *Pool, dt float64) {
 				merc.Add(C_TEAM_B)
 				merc.Color = api.Color_RED
 			}
-			merc.Cool = 1
-			merc.FireRange = 0.15
 
 			// started, so remove ticket
 			e.Tickets = e.Tickets[1:]

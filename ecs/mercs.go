@@ -90,7 +90,7 @@ func WaveStart(pool *Pool) {
 		base.Tickets = []*Ticket{}
 	}
 
-	// sort contracts by seniority DESC (oldest contractor gets paid first)
+	// sort contracts by seniority date ASC (oldest contractor gets paid first)
 	sort.Sort(bySeniorityAsc(contracts))
 
 	for _, contract := range contracts {
@@ -112,7 +112,7 @@ func WaveStart(pool *Pool) {
 
 		if len(base.Tickets) > 0 {
 
-			// order by seniority ASC (last contractor starts the wave)
+			// order tickets by seniority date DESC (last contractor starts the wave)
 			sort.Sort(bySeniorityDesc(base.Tickets))
 			base.AddAspect(C_WAVESTART)
 
@@ -121,4 +121,31 @@ func WaveStart(pool *Pool) {
 			base.Tickets = nil
 		}
 	}
+}
+
+var prefabs = make(map[Merc]*Entity, 4)
+
+func init() {
+
+	var merc *Entity
+
+	merc = NewEntity()
+	merc.AddAspect(C_POSITION, C_TERMINAL, C_ROTATION, C_VELOCITY, C_OBJECTIVES, C_SHOOTER, C_TARGETABLE)
+	merc.Rune = 'a' //'ߜ'
+	merc.Speed = 0.000225
+	merc.Cool = 1
+	merc.FireRange = 0.2
+	prefabs[Merc_ARCHER] = merc
+
+	merc = NewEntity()
+	merc.AddAspect(C_POSITION, C_TERMINAL, C_ROTATION, C_VELOCITY, C_OBJECTIVES, C_SHOOTER, C_TARGETABLE)
+	merc.Rune = 'h' //'ߜ'
+	merc.Speed = 0.000225
+	merc.Cool = 0.5
+	merc.FireRange = 0.1
+	prefabs[Merc_HUNTER] = merc
+}
+
+func MercPrefab(m Merc) *Entity {
+	return prefabs[m]
 }

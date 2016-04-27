@@ -35,6 +35,40 @@ type Entity struct {
 	*Wavestart
 }
 
+func NewEntity() *Entity {
+
+	return &Entity{
+		&Position{&Component{}, 0, 0},
+		&Rotation{&Component{}, 0, 0},
+		&Velocity{&Component{}, 0},
+		&Terminal{&Component{}, '?', api.Color_UNKNOWN, api.Color_UNKNOWN},
+		&Main{&Component{}},
+		&TeamA{&Component{}},
+		&TeamB{&Component{}},
+		&Base{&Component{}},
+		&Objectives{&Component{}, nil, nil},
+		&Shooter{&Component{}, 0, 0},
+		&Cooldown{&Component{}, 0},
+		&Bullet{&Component{}},
+		&Targetable{&Component{}},
+		&Dying{&Component{}, 0, 0},
+		&Baseselection{&Component{}, 0},
+		&Selected{&Component{}, nil},
+		&Basebuilding{&Component{}},
+		&Resource{&Component{}, 0},
+		&Tabbable{&Component{}, false, false},
+		&Energynode{&Component{}, nil, nil, 0},
+		&Energystore{&Component{}, 0},
+		&Target{&Component{}, nil},
+		&Waypoint{&Component{}, nil},
+		&Pathbuilding{&Component{}},
+		&Path{&Component{}, nil},
+		&Contracting{&Component{}, 0, 0, false},
+		&Payroll{&Component{}, nil, 0},
+		&Wavestart{&Component{}, nil},
+	}
+}
+
 func (e *Entity) AddAspect(aspect ...ComponentType) {
 	for _, t := range aspect {
 		e.Add(t)
@@ -273,4 +307,69 @@ func (e *Entity) Has(t ComponentType) bool {
 		return e.Wavestart.Active
 	}
 	return false
+}
+
+func (e *Entity) Clone(p *Entity) {
+
+	e.Position.Active = p.Position.Active
+	e.X = p.X
+	e.Y = p.Y
+	e.Rotation.Active = p.Rotation.Active
+	e.DX = p.DX
+	e.DY = p.DY
+	e.Velocity.Active = p.Velocity.Active
+	e.Speed = p.Speed
+	e.Terminal.Active = p.Terminal.Active
+	e.Rune = p.Rune
+	e.Color = p.Color
+	e.BgColor = p.BgColor
+	e.Main.Active = p.Main.Active
+	e.TeamA.Active = p.TeamA.Active
+	e.TeamB.Active = p.TeamB.Active
+	e.Base.Active = p.Base.Active
+	e.Objectives.Active = p.Objectives.Active
+	e.List = p.List
+	e.lastReached = p.lastReached
+	e.Shooter.Active = p.Shooter.Active
+	e.Cool = p.Cool
+	e.FireRange = p.FireRange
+	e.Cooldown.Active = p.Cooldown.Active
+	e.current = p.current
+	e.Bullet.Active = p.Bullet.Active
+	e.Targetable.Active = p.Targetable.Active
+	e.Dying.Active = p.Dying.Active
+	e.TimeToLive = p.TimeToLive
+	e.sickbed = p.sickbed
+	e.Baseselection.Active = p.Baseselection.Active
+	e.Hotkey = p.Hotkey
+	e.Selected.Active = p.Selected.Active
+	e.Info = p.Info
+	e.Basebuilding.Active = p.Basebuilding.Active
+	e.Resource.Active = p.Resource.Active
+	e.Resources = p.Resources
+	e.Tabbable.Active = p.Tabbable.Active
+	e.TabConfirmed = p.TabConfirmed
+	e.TabActive = p.TabActive
+	e.Energynode.Active = p.Energynode.Active
+	e.Upstream = p.Upstream
+	e.Downstream = p.Downstream
+	e.timeSinceLastEmission = p.timeSinceLastEmission
+	e.Energystore.Active = p.Energystore.Active
+	e.Energy = p.Energy
+	e.Target.Active = p.Target.Active
+	e.TargetEntity = p.TargetEntity
+	e.Waypoint.Active = p.Waypoint.Active
+	e.Outward = p.Outward
+	e.Pathbuilding.Active = p.Pathbuilding.Active
+	e.Path.Active = p.Path.Active
+	e.Waypoints = p.Waypoints
+	e.Contracting.Active = p.Contracting.Active
+	e.Guild = p.Guild
+	e.Merc = p.Merc
+	e.Signed = p.Signed
+	e.Payroll.Active = p.Payroll.Active
+	e.Contracts = p.Contracts
+	e.Burden = p.Burden
+	e.Wavestart.Active = p.Wavestart.Active
+	e.Tickets = p.Tickets
 }
