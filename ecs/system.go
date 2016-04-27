@@ -45,7 +45,12 @@ func Control(p *Pool, key api.Key) {
 	}
 
 	if key == api.Key_B {
-		selected := p.ListAspect(C_SELECTED)
+		selected := p.ListAspect(C_SELECTED, C_CONTRACTING)
+		if len(selected) > 0 {
+			selected[0].Merc = Merc_BRAWLER
+			return
+		}
+		selected = p.ListAspect(C_SELECTED)
 		if len(selected) > 0 {
 			selected[0].AddAspect(C_BASEBUILDING)
 		}
@@ -56,6 +61,14 @@ func Control(p *Pool, key api.Key) {
 		selected := p.ListAspect(C_SELECTED)
 		if len(selected) > 0 {
 			selected[0].AddAspect(C_CONTRACTING)
+		}
+		return
+	}
+
+	if key == api.Key_G {
+		selected := p.ListAspect(C_SELECTED, C_CONTRACTING)
+		if len(selected) > 0 {
+			selected[0].Merc = Merc_GLADIATOR
 		}
 		return
 	}
@@ -80,6 +93,14 @@ func Control(p *Pool, key api.Key) {
 		selected := p.ListAspect(C_SELECTED)
 		if len(selected) > 0 {
 			selected[0].AddAspect(C_PATHBUILDING)
+		}
+		return
+	}
+
+	if key == api.Key_W {
+		selected := p.ListAspect(C_SELECTED, C_CONTRACTING)
+		if len(selected) > 0 {
+			selected[0].Guild = Guild_WARRIORS
 		}
 		return
 	}
@@ -607,11 +628,11 @@ func contract(e *Entity, p *Pool) {
 
 	// merc already selected?
 	switch e.Merc {
-	case Merc_ARCHER, Merc_HUNTER:
-		e.Info = api.InfoContractSign
-	default:
+	case Merc_UNKNOWN:
 		e.Signed = false
 		return
+	default:
+		e.Info = api.InfoContractSign
 	}
 
 	if e.Signed {

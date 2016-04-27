@@ -144,6 +144,18 @@ func init() {
 	merc.Cool = 0.5
 	merc.FireRange = 0.1
 	prefabs[Merc_HUNTER] = merc
+
+	merc = NewEntity()
+	merc.AddAspect(C_POSITION, C_TERMINAL, C_ROTATION, C_VELOCITY, C_OBJECTIVES, C_TARGETABLE)
+	merc.Rune = 'b' //'ߜ'
+	merc.Speed = 0.000225
+	prefabs[Merc_BRAWLER] = merc
+
+	merc = NewEntity()
+	merc.AddAspect(C_POSITION, C_TERMINAL, C_ROTATION, C_VELOCITY, C_OBJECTIVES, C_TARGETABLE)
+	merc.Rune = 'g' //'ߜ'
+	merc.Speed = 0.000225
+	prefabs[Merc_GLADIATOR] = merc
 }
 
 func MercPrefab(m Merc) *Entity {

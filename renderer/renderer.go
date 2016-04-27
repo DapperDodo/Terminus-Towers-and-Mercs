@@ -58,6 +58,8 @@ func PollEvent() api.Key {
 			return api.Key_B
 		case 'c', 'C':
 			return api.Key_C
+		case 'g', 'G':
+			return api.Key_G
 		case 'h', 'H':
 			return api.Key_H
 		case 'p', 'P':

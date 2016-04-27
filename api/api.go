@@ -10,6 +10,7 @@ const (
 	Key_A
 	Key_B
 	Key_C
+	Key_G
 	Key_H
 	Key_R
 	Key_P

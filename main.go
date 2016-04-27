@@ -30,7 +30,7 @@ func main() {
 	game.Spawn(pool)
 
 	//wavetimer := time.NewTicker(time.Second * 75)
-	wavetimer := time.NewTicker(time.Second * 10)
+	wavetimer := time.NewTicker(time.Second * 15)
 
 gameloop:
 	for {
